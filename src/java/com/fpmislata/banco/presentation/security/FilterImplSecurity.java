@@ -21,10 +21,10 @@ public class FilterImplSecurity implements Filter {
        
        if(principal.equals("permisos")){
         System.out.println("Start Regular");
+         filterChain.doFilter(servletRequest, servletResponse);
            System.out.println("TRUE");
        }
        else{
-            filterChain.doFilter(servletRequest, servletResponse);
             System.out.println("false");
        }
     }
