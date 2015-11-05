@@ -9,9 +9,8 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
-        <listener-class>com.fpmislata.banco.presentation.ListenerImpl</listener-class>
+        <listener-class>com.fpmislata.banco.presentation.database.ServerContextListenerImpl</listener-class>
     </listener>
- 
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>

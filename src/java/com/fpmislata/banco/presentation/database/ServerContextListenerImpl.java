@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.fpmislata.banco.presentation;
+package com.fpmislata.banco.presentation.database;
 
 import com.fpmislata.banco.persistence.jdbc.migration.DatabaseMigration;
 import javax.servlet.ServletContextEvent;
@@ -17,7 +17,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author alumno
  */
-public class ListenerImpl implements ServletContextListener {
+public class ServerContextListenerImpl implements ServletContextListener {
 
 //    @Autowired
 //    JsonTransformer jsonTransformer;
