@@ -5,8 +5,10 @@
  */
 package com.fpmislata.banco.presentation;
 
+import com.fpmislata.banco.presentation.database.DatabaseMigration;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -20,7 +22,8 @@ public class ListenerImpl implements ServletContextListener {
 //    JsonTransformer jsonTransformer;
 //
 //    EntidadBancaria entidadBancaria = new EntidadBancaria("pru", "123", new Date(), "av", "1234");
-
+ @Autowired
+    DatabaseMigration databaseMigration;
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("Iniciando");
@@ -28,6 +31,7 @@ public class ListenerImpl implements ServletContextListener {
         AutowireCapableBeanFactory autowireCapableBeanFactory = webApplicationContext.getAutowireCapableBeanFactory();
         autowireCapableBeanFactory.autowireBean(this);
 //        System.out.println(jsonTransformer.ObjectToJson(entidadBancaria));
+          databaseMigration.migrate();
     }
 
     @Override
