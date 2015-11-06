@@ -1,4 +1,4 @@
-package com.fpmislata.banco.presentation.security;
+package com.fpmislata.banco.presentation.security.impl;
 
 import java.io.IOException;
 import javax.servlet.Filter;
@@ -22,7 +22,7 @@ public class FilterImplSecurity implements Filter {
        if(principal.equals("permisos")){
         System.out.println("Start Regular");
          filterChain.doFilter(servletRequest, servletResponse);
-           System.out.println("TRUE");
+           System.out.println("true");
        }
        else{
             System.out.println("false");

@@ -31,7 +31,7 @@
     </servlet-mapping>
     <filter>
         <filter-name>FilterImplSecurity</filter-name>
-        <filter-class>com.fpmislata.banco.presentation.security.FilterImplSecurity</filter-class>
+        <filter-class>com.fpmislata.banco.presentation.security.impl.FilterImplSecurity</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>FilterImplSecurity</filter-name>
