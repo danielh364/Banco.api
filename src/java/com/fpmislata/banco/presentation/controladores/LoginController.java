@@ -27,7 +27,7 @@ public class LoginController {
     @Autowired
     PasswordManager passwordManager;
 
-    @RequestMapping(value = "/login/", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public void read(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             Usuario usuario = new Usuario("Daniel", passwordManager.encrypt("12345"));

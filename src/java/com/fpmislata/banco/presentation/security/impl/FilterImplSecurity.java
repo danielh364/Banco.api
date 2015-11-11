@@ -1,5 +1,6 @@
 package com.fpmislata.banco.presentation.security.impl;
 
+import com.fpmislata.banco.business.domain.Usuario;
 import com.fpmislata.banco.persistence.security.Authorization;
 import com.fpmislata.banco.presentation.security.WebSession;
 import com.fpmislata.banco.presentation.security.WebSessionProvider;
@@ -25,8 +26,11 @@ public class FilterImplSecurity implements Filter {
     @Autowired
     Authorization authorization;
 
+    FilterConfig filterConfig = null;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        this.filterConfig = filterConfig;
     }
 
     @Override
@@ -38,18 +42,21 @@ public class FilterImplSecurity implements Filter {
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(httpservletRequest.getServletContext());
         AutowireCapableBeanFactory autowireCapableBeanFactory = webApplicationContext.getAutowireCapableBeanFactory();
         autowireCapableBeanFactory.autowireBean(this);
-//    
 
         WebSession webSession = webSessionProvider.getWebSession(httpservletRequest, httpservletResponse);
 
+        Usuario usuario = null;
+        String url = httpservletRequest.getRequestURI();
+        String method = httpservletRequest.getMethod();
+
         if (webSession != null) {
-            if (authorization.authorizedURL(webSession.getUsuario(), httpservletRequest.getRequestURI(), httpservletRequest.getMethod())) {
-                filterChain.doFilter(servletRequest, servletResponse);
-            } else {
-                httpservletResponse.setStatus(403);
-            }
-        } else {
+            usuario = webSession.getUsuario();
+        }
+
+        if (authorization.authorizedURL(usuario, url, method)) {
             filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            httpservletResponse.setStatus(403);
         }
     }
 
