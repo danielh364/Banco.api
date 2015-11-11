@@ -18,39 +18,43 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class FilterImplSecurity implements Filter {
-    
+
     @Autowired
     WebSessionProvider webSessionProvider;
-    
+
     @Autowired
     Authorization authorization;
-    
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
-    
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        
+
         HttpServletRequest httpservletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpservletResponse = (HttpServletResponse) servletResponse;
-        
+
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(httpservletRequest.getServletContext());
         AutowireCapableBeanFactory autowireCapableBeanFactory = webApplicationContext.getAutowireCapableBeanFactory();
         autowireCapableBeanFactory.autowireBean(this);
 //    
 
         WebSession webSession = webSessionProvider.getWebSession(httpservletRequest, httpservletResponse);
-        
-        if (authorization.authorizedURL(webSession.getUsuario(), httpservletRequest.getRequestURI(), httpservletRequest.getMethod())) {
-            filterChain.doFilter(servletRequest, servletResponse);
+
+        if (webSession != null) {
+            if (authorization.authorizedURL(webSession.getUsuario(), httpservletRequest.getRequestURI(), httpservletRequest.getMethod())) {
+                filterChain.doFilter(servletRequest, servletResponse);
+            } else {
+                httpservletResponse.setStatus(403);
+            }
         } else {
-            httpservletResponse.setStatus(403);
+            filterChain.doFilter(servletRequest, servletResponse);
         }
     }
-    
+
     @Override
     public void destroy() {
     }
-    
+
 }
