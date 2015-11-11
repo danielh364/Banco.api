@@ -16,6 +16,9 @@ public class WebSession {
     Usuario usuario;
     Date Fecha;
 
+    public WebSession() {
+    }
+
     public WebSession(Usuario usuario, Date Fecha) {
         this.usuario = usuario;
         this.Fecha = Fecha;
