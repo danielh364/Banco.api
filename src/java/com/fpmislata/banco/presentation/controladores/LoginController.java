@@ -6,7 +6,7 @@
 package com.fpmislata.banco.presentation.controladores;
 
 import com.fpmislata.banco.business.domain.Usuario;
-import com.fpmislata.banco.persistence.security.PasswordManager;
+import com.fpmislata.banco.security.PasswordManager;
 import com.fpmislata.banco.presentation.security.WebSession;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;

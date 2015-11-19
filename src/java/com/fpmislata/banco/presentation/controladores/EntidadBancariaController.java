@@ -8,7 +8,6 @@ package com.fpmislata.banco.presentation.controladores;
 import com.fpmislata.banco.business.domain.EntidadBancaria;
 import com.fpmislata.banco.business.service.EntidadBancariaService;
 import com.fpmislata.banco.presentation.Json.JsonTransformer;
-import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +38,7 @@ public class EntidadBancariaController {
             EntidadBancaria entidadBancaria = entidadBancariaService.get(identidadbancaria);
             String jsonSalida = jsonTransformer.ObjectToJson(entidadBancaria);
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-             httpServletResponse.setContentType("application/json; charset=UTF-8");
+            httpServletResponse.setContentType("application/json; charset=UTF-8");
             httpServletResponse.getWriter().println(jsonSalida);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -48,19 +47,25 @@ public class EntidadBancariaController {
 //find
 
     @RequestMapping(value = "/entidadbancaria", method = RequestMethod.GET, produces = "application/json")
-    public void find(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-        List<EntidadBancaria> entidadBancarias;
+    public void find(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        try {
 
-        if (httpServletRequest.getParameter("nombre") != null) {
+            List<EntidadBancaria> entidadBancarias;
 
-            entidadBancarias = entidadBancariaService.findByNombre(httpServletRequest.getParameter("nombre"));
-        } else {
-            entidadBancarias = entidadBancariaService.findAll();
+            if (httpServletRequest.getParameter("nombre") != null) {
+
+                entidadBancarias = entidadBancariaService.findByNombre(httpServletRequest.getParameter("nombre"));
+            } else {
+                entidadBancarias = entidadBancariaService.findAll();
+            }
+
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.setContentType("application/json; charset=UTF-8");
+            String jsonSalida = jsonTransformer.ObjectToJson(entidadBancarias);
+            httpServletResponse.getWriter().println(jsonSalida);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
-
-        String jsonSalida = jsonTransformer.ObjectToJson(entidadBancarias);
-        httpServletResponse.getWriter().println(jsonSalida);
-
     }
 
 //insert
@@ -83,23 +88,16 @@ public class EntidadBancariaController {
     @RequestMapping(value = "/entidadbancaria/{identidadbancaria}", method = RequestMethod.DELETE, produces = "application/json")
     public void delete(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, @PathVariable("identidadbancaria") int identidadbancaria) {
         try {
-            entidadBancariaService.delete(identidadbancaria);
-            httpServletResponse.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            boolean deleteSeguro;
+            deleteSeguro = entidadBancariaService.delete(identidadbancaria);
 
-        } //         catch (BussinessException ex) {
-        //        List<BussinessMessage> bussinessMessage=ex.getBussinessMessages();
-        //        String jsonSalida = jsonTransformerEntidadBancaria.ObjectToJson(bussinessMessage);
-        //         
-        //        httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        //        httpServletResponse.setContentType("application/json; charset=UTF-8");
-        //        try {
-        //            httpServletResponse.getWriter().println(jsonSalida);
-        //        } catch (IOException ex1) {
-        //            Logger.getLogger(EntidadBancariaController.class.getName()).log(Level.SEVERE, null, ex1);
-        //        }
-        //         
-        catch (Exception ex) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            if (deleteSeguro == true) {
+                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -116,8 +114,7 @@ public class EntidadBancariaController {
             httpServletResponse.getWriter().println(jsonSalida);
 
         } catch (Exception ex) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            httpServletResponse.setContentType("text/plain; charset=UTF-8");
+            throw new RuntimeException(ex);
         }
     }
 }

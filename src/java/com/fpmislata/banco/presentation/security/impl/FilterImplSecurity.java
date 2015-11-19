@@ -1,7 +1,7 @@
 package com.fpmislata.banco.presentation.security.impl;
 
 import com.fpmislata.banco.business.domain.Usuario;
-import com.fpmislata.banco.persistence.security.Authorization;
+import com.fpmislata.banco.security.Authorization;
 import com.fpmislata.banco.presentation.security.WebSession;
 import com.fpmislata.banco.presentation.security.WebSessionProvider;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class FilterImplSecurity implements Filter {
     @Autowired
     Authorization authorization;
 
-    FilterConfig filterConfig = null;
+    FilterConfig filterConfig;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -45,14 +45,15 @@ public class FilterImplSecurity implements Filter {
 
         WebSession webSession = webSessionProvider.getWebSession(httpservletRequest, httpservletResponse);
 
-        Usuario usuario = null;
+        Usuario usuario;
         String url = httpservletRequest.getRequestURI();
         String method = httpservletRequest.getMethod();
 
         if (webSession != null) {
             usuario = webSession.getUsuario();
+        } else {
+            usuario = null;
         }
-
         if (authorization.authorizedURL(usuario, url, method)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
