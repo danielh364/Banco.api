@@ -5,6 +5,7 @@
  */
 package com.fpmislata.banco.presentation.database;
 
+import com.fpmislata.banco.persistence.dao.impl.hibernate.HibernateUtil;
 import com.fpmislata.banco.persistence.jdbc.migration.DatabaseMigration;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -19,10 +20,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  */
 public class ServerContextListenerImpl implements ServletContextListener {
 
-//    @Autowired
-//    JsonTransformer jsonTransformer;
-//
-//    EntidadBancaria entidadBancaria = new EntidadBancaria("pru", "123", new Date(), "av", "1234");
+
     @Autowired
     DatabaseMigration databaseMigration;
 
@@ -32,16 +30,15 @@ public class ServerContextListenerImpl implements ServletContextListener {
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(sce.getServletContext());
         AutowireCapableBeanFactory autowireCapableBeanFactory = webApplicationContext.getAutowireCapableBeanFactory();
         autowireCapableBeanFactory.autowireBean(this);
-//        System.out.println(jsonTransformer.ObjectToJson(entidadBancaria));
+
         databaseMigration.migrate();
+        HibernateUtil.buildSessionFactory();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         System.out.println("desconectando");
-//        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(sce.getServletContext());
-//        AutowireCapableBeanFactory autowireCapableBeanFactory = webApplicationContext.getAutowireCapableBeanFactory();
-//        autowireCapableBeanFactory.autowireBean(this);
-//        System.out.println(jsonTransformer.ObjectToJson(entidadBancaria));
+         HibernateUtil.closeSessionFactory();
+        
     }
 }
