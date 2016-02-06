@@ -127,17 +127,35 @@ public class EntidadBancariaController {
 //update
     @RequestMapping(value = "/entidadbancaria/{identidadBancaria}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public void update(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, @RequestBody String jsonEntrada, @PathVariable("identidadBancaria") int identidadBancaria) {
+       
         try {
             EntidadBancaria entidadBancaria = (EntidadBancaria) jsonTransformer.fromJsonToObject(jsonEntrada, EntidadBancaria.class);
             entidadBancariaService.update(entidadBancaria);
-            String jsonSalida = jsonTransformer.ObjectToJson(entidadBancaria);
 
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
             httpServletResponse.setContentType("application/json; charset=UTF-8");
-            httpServletResponse.getWriter().println(jsonSalida);
+            httpServletResponse.getWriter().println(jsonTransformer.ObjectToJson(entidadBancaria));
 
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        } catch (BusinessException ex) {
+            List<BusinessMessage> bussinessMessage = ex.getBusinessMessages();
+            String jsonSalida = jsonTransformer.ObjectToJson(bussinessMessage);
+            //System.out.println(jsonSalida);
+
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.setContentType("application/json; charset=UTF-8");
+            try {
+                httpServletResponse.getWriter().println(jsonSalida);
+            } catch (IOException ex1) {
+                Logger.getLogger(EntidadBancariaController.class.getName()).log(Level.SEVERE, "Error devolviendo Lista de Mensajes", ex1);
+            }
+        } catch (Exception ex1) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            httpServletResponse.setContentType("text/plain; charset=UTF-8");
+            try {
+                ex1.printStackTrace(httpServletResponse.getWriter());
+            } catch (IOException ex2) {
+                Logger.getLogger(EntidadBancariaController.class.getName()).log(Level.SEVERE, "Error devolviendo la traza", ex2);
+            }
         }
     }
 }
