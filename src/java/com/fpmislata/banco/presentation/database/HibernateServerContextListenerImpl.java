@@ -5,6 +5,7 @@
  */
 package com.fpmislata.banco.presentation.database;
 
+import com.fpmislata.banco.persistence.dao.impl.hibernate.HibernateUtil;
 import com.fpmislata.banco.persistence.jdbc.migration.DatabaseMigration;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -17,26 +18,15 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author alumno
  */
-public class ServerContextListenerImpl implements ServletContextListener {
-
-
-    @Autowired
-    DatabaseMigration databaseMigration;
+public class HibernateServerContextListenerImpl implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        System.out.println("Iniciando");
-        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(sce.getServletContext());
-        AutowireCapableBeanFactory autowireCapableBeanFactory = webApplicationContext.getAutowireCapableBeanFactory();
-        autowireCapableBeanFactory.autowireBean(this);
-
-        databaseMigration.migrate();
-
+        HibernateUtil.buildSessionFactory();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        System.out.println("desconectando");
-        
+        HibernateUtil.closeSessionFactory();
     }
 }
